@@ -4,41 +4,50 @@ import { useAuth } from '../../../contexts/authContext'
 import { doCreateUserWithEmailAndPassword } from '../../../firebase/auth'
 
 const Register = () => {
-
+    // Otteniamo la funzione di navigazione da React Router
     const navigate = useNavigate()
 
+    // Stati per gestire email, password, conferma della password, stato di registrazione e messaggi di errore
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setconfirmPassword] = useState('')
     const [isRegistering, setIsRegistering] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
+    // Otteniamo lo stato dell'utente loggato dal contesto di autenticazione
     const { userLoggedIn } = useAuth()
 
+    // Funzione chiamata quando il modulo di registrazione viene inviato
     const onSubmit = async (e) => {
         e.preventDefault()
-        if(!isRegistering) {
+        // Verifichiamo se non siamo già in fase di registrazione
+        if (!isRegistering) {
+            // Impostiamo lo stato di registrazione su true per evitare invii multipli
             setIsRegistering(true)
+            // Chiamiamo la funzione per creare un nuovo utente utilizzando l'email e la password fornite
             await doCreateUserWithEmailAndPassword(email, password)
         }
     }
 
     return (
         <>
+            {/* Se l'utente è già loggato, lo reindirizziamo alla home */}
             {userLoggedIn && (<Navigate to={'/home'} replace={true} />)}
 
+            {/* Main content */}
             <main className="w-full h-screen flex self-center place-content-center place-items-center">
+                {/* Form per la registrazione */}
                 <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
                     <div className="text-center mb-6">
                         <div className="mt-2">
                             <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Create a New Account</h3>
                         </div>
-
                     </div>
                     <form
                         onSubmit={onSubmit}
                         className="space-y-4"
                     >
+                        {/* Campo email */}
                         <div>
                             <label className="text-sm text-gray-600 font-bold">
                                 Email
@@ -52,6 +61,7 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Campo password */}
                         <div>
                             <label className="text-sm text-gray-600 font-bold">
                                 Password
@@ -66,6 +76,7 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Campo conferma password */}
                         <div>
                             <label className="text-sm text-gray-600 font-bold">
                                 Confirm Password
@@ -80,10 +91,12 @@ const Register = () => {
                             />
                         </div>
 
+                        {/* Messaggio di errore */}
                         {errorMessage && (
                             <span className='text-red-600 font-bold'>{errorMessage}</span>
                         )}
 
+                        {/* Pulsante di registrazione */}
                         <button
                             type="submit"
                             disabled={isRegistering}
@@ -91,6 +104,8 @@ const Register = () => {
                         >
                             {isRegistering ? 'Signing Up...' : 'Sign Up'}
                         </button>
+
+                        {/* Link per passare alla pagina di accesso */}
                         <div className="text-sm text-center">
                             Already have an account? {'   '}
                             <Link to={'/login'} className="text-center text-sm hover:underline font-bold">Continue</Link>
